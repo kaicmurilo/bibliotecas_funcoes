@@ -50,7 +50,12 @@ class SharePoint:
         }
         token_response = requests.post(self.token_url, data=token_data)
         access_token = token_response.json().get("access_token")
-        return access_token
+        if access_token is not None:
+            print("Access token obtido com sucesso.")
+            return access_token
+        else:
+            logging.error("Erro ao obter o access token.")
+            # token_response.raise_for_status()
 
     def get_site_id(self):
         # Correção para formar a URL correta para buscar o site por caminho
@@ -62,6 +67,7 @@ class SharePoint:
         response = requests.get(api_url, headers=headers)
         if response.status_code == 200:
             site_info = response.json()
+            print(f"ID do site: {site_info['id']}")
             return site_info["id"]
         else:
             logging.error(f"Erro ao obter o ID do site: {response.text}")
